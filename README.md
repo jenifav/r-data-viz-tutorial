@@ -82,12 +82,22 @@ The R Markdown notebooks include rendered visualizations that you can view direc
   </tr>
 </table>
 
-*Note: Replace these placeholder images with actual screenshots from your tutorial outputs*# R Data Visualization Tutorial
+*Note: Replace these placeholder images with actual screenshots from  tutorial outputs*# R Data Visualization Tutorial
 
 ![R Version](https://img.shields.io/badge/R-%3E%3D4.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/yourusername/r-data-viz-tutorial/main?urlpath=rstudio)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=yourusername/r-data-viz-tutorial)
+
+## Note for Binder Users
+
+If packages are not automatically installed when using Binder:
+
+1. Open the R console in RStudio
+2. Run the command: `source("install.R")`
+3. Wait for all packages to install (this may take a few minutes)
+4. You can verify installation with: `library(tidyverse); library(ggplot2)`
+
 
 A comprehensive tutorial on data visualization techniques in R, from basic plots to advanced interactive visualizations.
 
