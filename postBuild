@@ -1,0 +1,2 @@
+#!/bin/bash
+Rscript install_packages.R
