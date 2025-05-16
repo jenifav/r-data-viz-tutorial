@@ -1,0 +1,16 @@
+name: r-data-viz
+channels:
+  - conda-forge
+dependencies:
+  - r-base=4.2
+  - r-tidyverse
+  - r-ggplot2
+  - r-dplyr
+  - r-rcolorbrewer
+  - r-reshape2
+  - r-corrplot
+  - r-patchwork
+  - r-devtools
+  - r-plotly
+  - r-vcd
+  - r-remotes
