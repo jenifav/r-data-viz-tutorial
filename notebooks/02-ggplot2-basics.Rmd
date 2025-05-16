@@ -1,0 +1,263 @@
+---
+title: "Getting Started with ggplot2"
+author: "Jennifer Favaloro"
+date: "May 19, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 100)
+```
+
+# Getting Started with ggplot2
+
+This notebook covers the fundamentals of ggplot2 and demonstrates how to create basic plots with customizations. We'll explore the underlying principles and syntax that make ggplot2 a powerful tool for data visualization.
+
+```{r load-packages}
+# Load required libraries
+library(tidyverse)
+library(ggplot2)
+```
+
+## The Grammar of Graphics Concept
+
+ggplot2 is based on the Grammar of Graphics, which breaks down visualizations into semantic components:
+
+1. **Data**: The dataset being plotted
+2. **Aesthetics**: Mapping of variables to visual properties (x, y, color, size, etc.)
+3. **Geometries**: The actual shapes representing data (points, lines, bars, etc.)
+4. **Facets**: For creating small multiples (subplots)
+5. **Statistics**: Statistical transformations (counts, means, etc.)
+6. **Coordinates**: The coordinate system (Cartesian, polar, etc.)
+7. **Themes**: Controlling the display (fonts, colors, backgrounds, etc.)
+
+This layered approach allows for creating complex visualizations by combining simple components.
+
+## Basic ggplot2 Syntax and Structure
+
+Let's first load our dataset and explore the basic syntax of ggplot2.
+
+```{r load-data}
+# Load the built-in mtcars dataset
+data(mtcars)
+head(mtcars)
+
+# Convert cylinders to factor for better visualization
+mtcars$cyl <- as.factor(mtcars$cyl)  # Number of cylinders
+mtcars$am <- as.factor(mtcars$am)    # Transmission (0 = automatic, 1 = manual)
+```
+
+The basic structure of a ggplot2 plot follows this pattern:
+
+```
+ggplot(data, aes(x, y)) + geom_function()
+```
+
+Let's see what happens when we create an empty plot with just the axes:
+
+```{r empty-plot}
+# Empty plot with just the axes
+ggplot(mtcars, aes(x = wt, y = mpg))
+```
+
+Notice that ggplot2 creates the coordinate system, but there's nothing plotted yet because we haven't specified a geometry. Let's add points to create a scatter plot:
+
+```{r basic-scatter}
+# Adding points to create a scatter plot
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+```
+
+Now we can see the relationship between car weight and fuel efficiency.
+
+## Creating Basic Plot Types
+
+Let's explore how to create different types of plots using ggplot2.
+
+### Scatter Plot
+
+```{r scatter-plot}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon")
+```
+
+### Bar Chart
+
+Let's use the built-in diamonds dataset to create a bar chart showing the count of diamonds by cut quality:
+
+```{r bar-chart}
+# Using the built-in diamonds dataset
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar() +
+  labs(title = "Count of Diamonds by Cut Quality",
+       x = "Cut Quality",
+       y = "Count")
+```
+
+### Bar Chart with Calculated Values
+
+Sometimes we want to plot pre-calculated values rather than counts. Let's calculate the average MPG by cylinder group and plot it:
+
+```{r bar-chart-calculated}
+mtcars_summary <- mtcars %>%
+  group_by(cyl) %>%
+  summarize(avg_mpg = mean(mpg))
+
+ggplot(mtcars_summary, aes(x = cyl, y = avg_mpg)) +
+  geom_col() +
+  labs(title = "Average MPG by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Average MPG")
+```
+
+### Line Graph
+
+Line graphs are great for showing trends over time. Let's use the economics dataset to plot unemployment over time:
+
+```{r line-graph}
+# Using the economics dataset
+ggplot(economics, aes(x = date, y = unemploy)) +
+  geom_line() +
+  labs(title = "US Unemployment Over Time",
+       x = "Date",
+       y = "Unemployment (thousands)")
+```
+
+### Histogram
+
+Histograms help visualize the distribution of a continuous variable:
+
+```{r histogram}
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(bins = 10) +
+  labs(title = "Distribution of Fuel Efficiency",
+       x = "Miles Per Gallon",
+       y = "Count")
+```
+
+### Density Plot
+
+Density plots are smoothed versions of histograms, useful for showing the distribution shape:
+
+```{r density-plot}
+ggplot(mtcars, aes(x = mpg)) +
+  geom_density(fill = "blue", alpha = 0.5) +
+  labs(title = "Density of Fuel Efficiency",
+       x = "Miles Per Gallon",
+       y = "Density")
+```
+
+## Customizing Plot Aesthetics
+
+One of the strengths of ggplot2 is how easily we can map variables to visual properties (aesthetics) like color, size, and shape.
+
+### Adding Color
+
+```{r color-aesthetic}
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +
+  geom_point(size = 3) +
+  labs(title = "Car Weight vs. Fuel Efficiency by Cylinders",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders")
+```
+
+### Adding Shape
+
+```{r shape-aesthetic}
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl, shape = am)) +
+  geom_point(size = 3) +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders",
+       shape = "Transmission (0 = auto, 1 = manual)")
+```
+
+### Customizing Colors
+
+```{r custom-colors}
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +
+  geom_point(size = 3) +
+  scale_color_manual(values = c("red", "green", "blue")) +
+  labs(title = "Car Weight vs. Fuel Efficiency by Cylinders",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders")
+```
+
+### Adding a Smoothing Line
+
+```{r smoothing-line}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Car Weight vs. Fuel Efficiency with Trend Line",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon")
+```
+
+### Customizing the Theme
+
+```{r custom-theme}
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +
+  geom_point(size = 3) +
+  labs(title = "Car Weight vs. Fuel Efficiency by Cylinders",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    legend.position = "bottom"
+  )
+```
+
+## Saving and Exporting Visualizations
+
+It's often useful to save your visualizations to share them or include them in reports. ggplot2 makes this easy with the `ggsave()` function.
+
+```{r save-plot, eval=FALSE}
+# Create a plot to save
+p <- ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +
+  geom_point(size = 3) +
+  labs(title = "Car Weight vs. Fuel Efficiency by Cylinders",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders") +
+  theme_minimal()
+
+# Save as PNG
+ggsave("my_plot.png", p, width = 8, height = 6, dpi = 300)
+
+# Save as PDF
+ggsave("my_plot.pdf", p, width = 8, height = 6)
+
+# Save as SVG
+ggsave("my_plot.svg", p, width = 8, height = 6)
+```
+
+## Summary
+
+In this notebook, we've learned the basics of ggplot2, including:
+
+1. The Grammar of Graphics concept and how it applies to ggplot2
+2. Basic ggplot2 syntax and structure
+3. Creating different types of plots (scatter plots, bar charts, line graphs, histograms, and density plots)
+4. Customizing plot aesthetics (color, shape, size)
+5. Adding statistical transformations (smoothing lines)
+6. Customizing themes
+7. Saving and exporting visualizations
+
+In the next section, we'll explore more advanced ggplot2 techniques like faceting, combining multiple geoms, and using color effectively.

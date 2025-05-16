@@ -1,0 +1,334 @@
+---
+title: "Interactive Visualizations with Plotly"
+author: "Jennifer Favaloro"
+date: "May 19, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 100)
+```
+
+# Interactive Visualizations with Plotly
+
+This notebook introduces interactive visualizations using the plotly package for R. Plotly creates interactive web-based visualizations that allow users to hover, zoom, pan, and select data points. These interactive features can greatly enhance data exploration and presentation.
+
+```{r load-packages}
+# Load required libraries
+library(plotly)
+library(dplyr)
+library(reshape2)
+```
+
+## Example 1: Interactive Scatter Plot
+
+Let's start with a basic interactive scatter plot using the built-in mtcars dataset:
+
+```{r scatter-plot}
+# Using the built-in mtcars dataset
+scatter_plot <- plot_ly(data = mtcars, 
+                        x = ~wt, 
+                        y = ~mpg, 
+                        color = ~factor(cyl),
+                        size = ~hp,
+                        text = ~paste("Car: ", rownames(mtcars), 
+                                     "<br>Weight: ", wt, 
+                                     "<br>MPG: ", mpg,
+                                     "<br>Cylinders: ", cyl,
+                                     "<br>Horsepower: ", hp),
+                        hoverinfo = "text",
+                        type = "scatter",
+                        mode = "markers") %>%
+  layout(title = "Car Weight vs. Fuel Efficiency",
+         xaxis = list(title = "Weight (1000 lbs)"),
+         yaxis = list(title = "Miles Per Gallon"),
+         legend = list(title = list(text = "Cylinders")))
+
+# Display the plot
+scatter_plot
+```
+
+In this interactive plot:
+- Hover over points to see detailed information
+- Click and drag to zoom into a specific region
+- Double-click to reset the zoom
+- Click on legend items to hide/show categories
+- Use the mode bar (top-right) for additional tools
+
+Key features of this plotly scatter plot:
+- Points are colored by the number of cylinders
+- Point size represents horsepower
+- Custom hover text shows multiple variables
+- The layout is customized with titles and legend settings
+
+## Example 2: Bar Chart
+
+Next, let's create an interactive bar chart with custom colors:
+
+```{r bar-chart}
+# Summarize mtcars data by cylinder
+cyl_summary <- mtcars %>%
+  group_by(cyl) %>%
+  summarize(avg_mpg = mean(mpg),
+            count = n())
+
+# Create a bar chart with custom colors
+bar_plot <- plot_ly(data = cyl_summary,
+                    x = ~factor(cyl),
+                    y = ~avg_mpg,
+                    type = "bar",
+                    marker = list(color = c("#1f77b4", "#ff7f0e", "#2ca02c")),
+                    text = ~paste("Cylinders: ", cyl,
+                                 "<br>Average MPG: ", round(avg_mpg, 1),
+                                 "<br>Count: ", count),
+                    hoverinfo = "text") %>%
+  layout(title = "Average Fuel Efficiency by Number of Cylinders",
+         xaxis = list(title = "Number of Cylinders"),
+         yaxis = list(title = "Average MPG"))
+
+# Display the plot
+bar_plot
+```
+
+This bar chart shows the average MPG for each cylinder category, with hover text that includes the average MPG and the number of cars in each category.
+
+## Example 3: Line Chart with Multiple Series
+
+Line charts are particularly useful for time series data. Let's create a line chart with multiple series using the economics data:
+
+```{r line-chart}
+# Load the economics dataset from ggplot2
+data(economics, package = "ggplot2")
+
+# Create a subset of the data
+econ_subset <- tail(economics, 120)  # Last 10 years of data
+
+# Create a line chart with multiple series
+line_plot <- plot_ly(data = econ_subset, x = ~date) %>%
+  add_trace(y = ~unemploy, name = "Unemployment",
+            type = "scatter", mode = "lines",
+            line = list(color = "#1f77b4", width = 2)) %>%
+  add_trace(y = ~uempmed, name = "Median Unemployment Duration",
+            type = "scatter", mode = "lines",
+            line = list(color = "#ff7f0e", width = 2)) %>%
+  layout(title = "US Unemployment Trends",
+         xaxis = list(title = "Date"),
+         yaxis = list(title = "Value"),
+         legend = list(x = 0.1, y = 0.9))
+
+# Display the plot
+line_plot
+```
+
+This line chart shows two unemployment metrics over time:
+- Total unemployment (in thousands of people)
+- Median duration of unemployment (in weeks)
+
+The interactive nature allows users to zoom into specific time periods and compare the two metrics.
+
+## Example 4: Heatmap
+
+Heatmaps are useful for visualizing matrices of data, such as correlation matrices:
+
+```{r heatmap}
+# Calculate correlation matrix
+cor_matrix <- cor(mtcars[, c("mpg", "disp", "hp", "drat", "wt", "qsec")])
+
+# Convert to a format suitable for plotly
+cor_data <- as.data.frame(cor_matrix)
+cor_data$variable1 <- rownames(cor_data)
+cor_long <- tidyr::pivot_longer(cor_data, 
+                               cols = c("mpg", "disp", "hp", "drat", "wt", "qsec"),
+                               names_to = "variable2", 
+                               values_to = "correlation")
+
+# Create a heatmap
+heatmap_plot <- plot_ly(data = cor_long,
+                        x = ~variable1,
+                        y = ~variable2,
+                        z = ~correlation,
+                        type = "heatmap",
+                        colorscale = "RdBu",
+                        zmin = -1, zmax = 1,
+                        text = ~paste("Variables: ", variable1, " & ", variable2,
+                                     "<br>Correlation: ", round(correlation, 2)),
+                        hoverinfo = "text") %>%
+  layout(title = "Correlation Matrix of Car Features",
+         xaxis = list(title = ""),
+         yaxis = list(title = ""))
+
+# Display the plot
+heatmap_plot
+```
+
+This heatmap shows the correlations between different car features, with blue representing positive correlations and red representing negative correlations. The interactive hover text shows the exact correlation value.
+
+## Example 5: 3D Scatter Plot
+
+Plotly makes it easy to create interactive 3D visualizations:
+
+```{r scatter-3d}
+# Create a 3D scatter plot
+scatter_3d <- plot_ly(data = mtcars,
+                      x = ~wt,
+                      y = ~hp,
+                      z = ~mpg,
+                      color = ~factor(cyl),
+                      size = ~qsec,
+                      text = ~paste("Car: ", rownames(mtcars),
+                                   "<br>Weight: ", wt,
+                                   "<br>Horsepower: ", hp,
+                                   "<br>MPG: ", mpg,
+                                   "<br>Cylinders: ", cyl),
+                      hoverinfo = "text",
+                      type = "scatter3d",
+                      mode = "markers") %>%
+  layout(title = "3D Visualization of Car Features",
+         scene = list(
+           xaxis = list(title = "Weight (1000 lbs)"),
+           yaxis = list(title = "Horsepower"),
+           zaxis = list(title = "Miles Per Gallon")
+         ))
+
+# Display the plot
+scatter_3d
+```
+
+This 3D scatter plot visualizes the relationship between weight, horsepower, and MPG, with points colored by the number of cylinders and sized by quarter-mile time. 
+
+The interactive features of 3D plotly plots are particularly powerful:
+- Click and drag to rotate the plot
+- Scroll to zoom in and out
+- Double-click to reset the view
+- Hover for details about each point
+
+## Example 6: Box Plot
+
+Box plots are useful for comparing distributions across categories:
+
+```{r box-plot}
+# Create a box plot
+box_plot <- plot_ly(data = mtcars,
+                    x = ~factor(cyl),
+                    y = ~mpg,
+                    color = ~factor(cyl),
+                    type = "box",
+                    boxpoints = "all",
+                    jitter = 0.3,
+                    pointpos = 0) %>%
+  layout(title = "Distribution of Fuel Efficiency by Cylinder Count",
+         xaxis = list(title = "Number of Cylinders"),
+         yaxis = list(title = "Miles Per Gallon"),
+         showlegend = FALSE)
+
+# Display the plot
+box_plot
+```
+
+This interactive box plot shows the distribution of MPG for each cylinder category, including all individual data points. The `boxpoints = "all"` setting ensures that all individual points are shown, and `jitter = 0.3` adds some horizontal random noise to prevent overlapping.
+
+## Example 7: Histogram with Multiple Traces
+
+We can create overlapping histograms to compare distributions:
+
+```{r histogram}
+# Create overlapping histograms
+hist_plot <- plot_ly(alpha = 0.6) %>%
+  add_histogram(x = mtcars$mpg[mtcars$cyl == 4],
+                name = "4 Cylinders",
+                marker = list(color = "#1f77b4")) %>%
+  add_histogram(x = mtcars$mpg[mtcars$cyl == 6],
+                name = "6 Cylinders",
+                marker = list(color = "#ff7f0e")) %>%
+  add_histogram(x = mtcars$mpg[mtcars$cyl == 8],
+                name = "8 Cylinders",
+                marker = list(color = "#2ca02c")) %>%
+  layout(title = "Distribution of MPG by Cylinder Count",
+         xaxis = list(title = "Miles Per Gallon"),
+         yaxis = list(title = "Count"),
+         barmode = "overlay")
+
+# Display the plot
+hist_plot
+```
+
+This plot shows the distribution of MPG for each cylinder category as overlapping histograms. The `barmode = "overlay"` setting ensures that the histograms are overlaid rather than stacked.
+
+## Example 8: Bubble Chart
+
+A bubble chart is a scatter plot where a third variable is represented by the size of the bubbles:
+
+```{r bubble-chart}
+# Create a bubble chart
+bubble_plot <- plot_ly(data = mtcars,
+                       x = ~wt,
+                       y = ~mpg,
+                       size = ~disp,
+                       color = ~factor(am),
+                       colors = c("#1f77b4", "#ff7f0e"),
+                       text = ~paste("Car: ", rownames(mtcars),
+                                    "<br>Weight: ", wt,
+                                    "<br>MPG: ", mpg,
+                                    "<br>Displacement: ", disp,
+                                    "<br>Transmission: ", ifelse(am == 0, "Automatic", "Manual")),
+                       hoverinfo = "text",
+                       type = "scatter",
+                       mode = "markers",
+                       marker = list(opacity = 0.7, sizemode = "diameter")) %>%
+  layout(title = "Car Weight vs. Fuel Efficiency (Bubble Size = Displacement)",
+         xaxis = list(title = "Weight (1000 lbs)"),
+         yaxis = list(title = "Miles Per Gallon"),
+         legend = list(title = list(text = "Transmission")))
+
+# Display the plot
+bubble_plot
+```
+
+In this bubble chart:
+- X-axis represents car weight
+- Y-axis represents fuel efficiency (MPG)
+- Bubble size represents engine displacement
+- Color represents transmission type (automatic or manual)
+
+## Saving Plotly Visualizations
+
+Plotly visualizations can be saved as interactive HTML files for sharing or embedding in web pages:
+
+```{r save-plotly, eval=FALSE}
+# Example of saving a plot to an HTML file
+htmlwidgets::saveWidget(as_widget(scatter_plot), "scatter_plot.html")
+
+# You can also export to static image formats
+# orca(scatter_plot, "scatter_plot.png")
+# Note: This requires the orca package to be installed
+# install.packages("processx")
+# plotly::orca_install()
+```
+
+## Summary
+
+In this notebook, we've explored interactive data visualization with plotly, including:
+
+1. Interactive scatter plots with hover information
+2. Bar charts with custom colors and hover text
+3. Line charts with multiple series
+4. Interactive heatmaps for correlation matrices
+5. 3D scatter plots for exploring multidimensional relationships
+6. Box plots with jittered points
+7. Overlapping histograms for comparing distributions
+8. Bubble charts for visualizing multiple variables
+
+The interactive nature of plotly visualizations makes them particularly useful for:
+- Exploratory data analysis
+- Interactive dashboards
+- Web-based reports
+- Presentations where you want to show both the big picture and the details
+
+In the next section, we'll explore mosaic plots for visualizing categorical data relationships.

@@ -1,0 +1,386 @@
+---
+title: "Advanced ggplot2 Techniques"
+author: "Jennifer Favaloro"
+date: "May 19, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 100)
+```
+
+# Advanced ggplot2 Techniques
+
+This notebook demonstrates advanced ggplot2 techniques for creating more sophisticated and customized visualizations. We'll build on the basic concepts covered in the previous section and explore faceting, multiple geoms, custom themes, and more.
+
+```{r load-packages}
+# Load required libraries
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+library(patchwork)
+```
+
+## Working with Multiple Variables
+
+Let's start by loading and preparing our data. We'll use the diamonds dataset and simplify the clarity categories to make visualization clearer:
+
+```{r prepare-data}
+# Load the diamonds dataset
+data(diamonds, package = "ggplot2")
+
+# Let's reduce the number of clarity categories for better visualization
+diamonds <- diamonds %>%
+  mutate(Clarity = case_when(
+    clarity %in% c("SI1", "SI2") ~ "SI",
+    clarity %in% c("VS1", "VS2") ~ "VS",
+    clarity %in% c("VVS1", "VVS2") ~ "VVS",
+    .default = clarity
+  ))
+
+# Check the mapping
+table(diamonds$clarity, diamonds$Clarity, useNA="ifany")
+```
+
+Now let's create a plot that visualizes multiple variables using different aesthetics:
+
+```{r multiple-variables}
+# Visualizing multiple variables with color, size, and shape
+# Taking a sample to avoid overplotting
+ggplot(diamonds[sample(nrow(diamonds), 1000), ], aes(x = carat, y = price)) +
+  geom_point(aes(color = cut, size = depth, shape = Clarity)) +
+  labs(title = "Diamond Price vs. Carat with Multiple Variables",
+       x = "Carat",
+       y = "Price (USD)",
+       color = "Cut Quality",
+       size = "Depth %",
+       shape = "Clarity") +
+  theme_minimal()
+```
+
+This plot shows the relationship between diamond carat weight and price, while also encoding cut quality (color), depth (size), and clarity (shape).
+
+## Faceting and Small Multiples
+
+Faceting is a powerful technique for creating small multiples - separate plots for subsets of your data. This helps reveal patterns across categories.
+
+### Faceting by a Single Variable (cut)
+
+```{r facet-wrap}
+# Faceting by a single variable (cut)
+ggplot(diamonds[sample(nrow(diamonds), 5000), ], aes(x = carat, y = price)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  facet_wrap(~ cut) +
+  labs(title = "Diamond Price vs. Carat by Cut",
+       x = "Carat",
+       y = "Price (USD)") +
+  theme_light()
+```
+
+### Faceting by Two Variables (cut and color)
+
+```{r facet-grid}
+# Faceting by two variables (cut and color)
+ggplot(diamonds[sample(nrow(diamonds), 5000), ], aes(x = carat, y = price)) +
+  geom_point(alpha = 0.5, color = "purple") +
+  facet_grid(color ~ cut) +
+  labs(title = "Diamond Price vs. Carat by Cut and Color",
+       x = "Carat",
+       y = "Price (USD)") +
+  theme_light()
+```
+
+## Combining Multiple Geoms
+
+ggplot2 allows you to layer multiple geoms to create rich visualizations.
+
+### Combining Points and Smoothing Lines
+
+```{r points-smoothing}
+# First, let's prepare the mtcars data
+data(mtcars)
+mtcars$cyl <- as.factor(mtcars$cyl)
+
+# Combining points and smoothing lines
+ggplot(mtcars, aes(x = wt, y = mpg, color = cyl, group = cyl)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Car Weight vs. Fuel Efficiency by Cylinders",
+       subtitle = "With Linear Regression Lines",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders") +
+  theme_minimal()
+```
+
+### Combining Boxplot and Jittered Points
+
+```{r boxplot-jitter}
+# Combining boxplot and jittered points
+ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl, group = cyl)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  labs(title = "Fuel Efficiency by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  theme_minimal()
+```
+
+### Violin Plot with Boxplot Inside
+
+```{r violin-boxplot}
+# Violin plot with boxplot inside
+ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl, group = cyl)) +
+  geom_violin(alpha = 0.5) +
+  geom_boxplot(width = 0.2, alpha = 0.8) +
+  labs(title = "Fuel Efficiency Distribution by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  theme_minimal()
+```
+
+## Custom Themes and Styling
+
+ggplot2 comes with several built-in themes, and you can also create your own.
+
+### Built-in Themes
+
+```{r base-plot-for-themes}
+# Create a base plot to apply different themes
+p <- ggplot(mtcars, aes(x = wt, y = mpg, color = cyl)) +
+  geom_point(size = 3) +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders")
+
+# Display the base plot
+p
+```
+
+Let's apply different built-in themes to our base plot:
+
+```{r builtin-themes, fig.height=15}
+# Default theme
+p1 <- p + theme_gray() + ggtitle("theme_gray() - Default")
+
+# Minimal theme
+p2 <- p + theme_minimal() + ggtitle("theme_minimal()")
+
+# Classic theme
+p3 <- p + theme_classic() + ggtitle("theme_classic()")
+
+# Black and white theme
+p4 <- p + theme_bw() + ggtitle("theme_bw()")
+
+# Light theme
+p5 <- p + theme_light() + ggtitle("theme_light()")
+
+# Dark theme
+p6 <- p + theme_dark() + ggtitle("theme_dark()")
+
+# Arrange them using patchwork
+(p1 | p2) / 
+(p3 | p4) / 
+(p5 | p6)
+```
+
+### Creating a Custom Theme
+
+You can create your own theme by modifying an existing theme or starting from scratch:
+
+```{r custom-theme}
+# Creating a custom theme
+my_theme <- theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "darkgray"),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    legend.title = element_text(size = 10, face = "bold"),
+    panel.grid.major = element_line(color = "lightgray", size = 0.5),
+    panel.grid.minor = element_line(color = "lightgray", size = 0.25, linetype = "dashed")
+  )
+
+# Apply custom theme
+p + my_theme + ggtitle("Custom Theme")
+```
+
+## Using Color Effectively with RColorBrewer
+
+The RColorBrewer package provides carefully designed color palettes for different types of data.
+
+### Sequential Palette (Blues)
+
+```{r sequential-palette}
+# Sequential palette (Blues)
+ggplot(mtcars, aes(x = wt, y = mpg, color = qsec)) +
+  geom_point(size = 3) +
+  scale_color_distiller(palette = "Blues", direction = 1) +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       subtitle = "Sequential Color Palette (Blues)",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Quarter Mile Time") +
+  theme_minimal()
+```
+
+### Diverging Palette (Spectral)
+
+```{r diverging-palette}
+# Diverging palette (Spectral)
+ggplot(mtcars, aes(x = wt, y = mpg, color = qsec)) +
+  geom_point(size = 3) +
+  scale_color_distiller(palette = "Spectral", direction = 1) +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       subtitle = "Diverging Color Palette (Spectral)",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Quarter Mile Time") +
+  theme_minimal()
+```
+
+### Qualitative Palette (Set1)
+
+```{r qualitative-palette}
+# Qualitative palette (Set1)
+ggplot(mtcars, aes(x = wt, y = mpg, color = as.factor(cyl))) +
+  geom_point(size = 3) +
+  scale_color_brewer(palette = "Set1") +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       subtitle = "Qualitative Color Palette (Set1)",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders") +
+  theme_minimal()
+```
+
+## Annotations and Labels
+
+Adding annotations and labels can help emphasize key points in your visualizations.
+
+### Adding Text Labels to Points
+
+```{r text-labels}
+# Adding text labels to points
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(size = 2) +
+  geom_text(aes(label = rownames(mtcars)), hjust = -0.2, vjust = 0.5, size = 3) +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       subtitle = "With Car Model Labels",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon") +
+  theme_minimal() +
+  xlim(1, 6.5)  # Extend x-axis to make room for labels
+```
+
+### Adding Annotations
+
+```{r annotations}
+# Adding annotations
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(color = cyl), size = 3) +
+  annotate("rect", xmin = 3, xmax = 4, ymin = 15, ymax = 20, 
+           alpha = 0.2, fill = "yellow") +
+  annotate("text", x = 3.5, y = 21, label = "Mid-weight, mid-efficiency cars", 
+           fontface = "bold") +
+  annotate("segment", x = 3.5, y = 20.5, xend = 3.5, yend = 20, 
+           arrow = arrow(length = unit(0.2, "cm"))) +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon",
+       color = "Cylinders") +
+  theme_minimal()
+```
+
+## Coordinate Systems and Transformations
+
+Different coordinate systems can help highlight different aspects of your data.
+
+### Flipping Coordinates
+
+```{r coord-flip-comparison, fig.height=10}
+# Standard orientation
+p1 <- ggplot(mtcars, aes(x = cyl, y = mpg)) +
+  geom_boxplot(aes(fill = cyl, group = cyl)) +
+  labs(title = "Fuel Efficiency by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  theme_minimal()
+
+# Flipped coordinates
+p2 <- ggplot(mtcars, aes(x = cyl, y = mpg)) +
+  geom_boxplot(aes(fill = cyl, group = cyl)) +
+  labs(title = "Fuel Efficiency by Number of Cylinders (Flipped)",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  coord_flip() +
+  theme_minimal()
+
+# Display both
+p1 / p2
+```
+
+### Polar Coordinates
+
+```{r polar-coords}
+# Polar coordinates
+ggplot(mtcars, aes(x = factor(cyl), fill = factor(cyl), group = cyl)) +
+  geom_bar() +
+  labs(title = "Count of Cars by Number of Cylinders (Polar)",
+       x = "Number of Cylinders",
+       y = "Count",
+       fill = "Cylinders") +
+  coord_polar() +
+  theme_minimal()
+```
+
+### Log Transformation
+
+```{r log-transform-comparison, fig.height=10}
+# Standard scale
+p1 <- ggplot(diamonds[sample(nrow(diamonds), 1000), ], aes(x = carat, y = price)) +
+  geom_point(alpha = 0.5) +
+  labs(title = "Diamond Price vs. Carat (Standard Scale)",
+       x = "Carat",
+       y = "Price (USD)") +
+  theme_minimal()
+
+# Log scale
+p2 <- ggplot(diamonds[sample(nrow(diamonds), 1000), ], aes(x = carat, y = price)) +
+  geom_point(alpha = 0.5) +
+  labs(title = "Diamond Price vs. Carat (Log Scale)",
+       x = "Carat",
+       y = "Price (USD) - Log Scale") +
+  scale_y_log10() +
+  theme_minimal()
+
+# Display both
+p1 / p2
+```
+
+## Summary
+
+In this notebook, we've explored advanced ggplot2 techniques including:
+
+1. Working with multiple variables simultaneously
+2. Creating small multiples with faceting
+3. Combining multiple geoms for richer visualizations
+4. Customizing themes and styling
+5. Using color effectively with RColorBrewer
+6. Adding annotations and labels
+7. Working with different coordinate systems and transformations
+
+These techniques provide a foundation for creating sophisticated, publication-quality visualizations. In the next section, we'll explore specialized visualizations for statistical analysis, correlations, and time series data.

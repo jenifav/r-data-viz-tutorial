@@ -1,0 +1,439 @@
+---
+title: "Specialized Visualizations"
+author: "Jennifer Favaloro"
+date: "May 19, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 100)
+```
+
+# Specialized Visualizations
+
+This notebook demonstrates specialized visualization techniques in R, including statistical visualizations, correlation plots, and heatmaps. These visualizations are particularly useful for exploratory data analysis and statistical inference.
+
+```{r load-packages}
+# Load required libraries
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
+library(corrplot)
+library(patchwork)
+```
+
+## Statistical Visualizations
+
+Statistical visualizations help us understand the distribution and summary statistics of our data. Let's explore various statistical visualization techniques.
+
+### Box Plots
+
+Box plots (also called box-and-whisker plots) show the distribution of a continuous variable through quartiles, with outliers plotted as individual points.
+
+```{r boxplots}
+# First, let's prepare the mtcars data
+data(mtcars)
+mtcars$cyl <- as.factor(mtcars$cyl)
+
+# Box plots
+ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl, group = cyl)) +
+  geom_boxplot() +
+  labs(title = "Fuel Efficiency by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  theme_minimal()
+```
+
+In the box plot:
+- The box shows the interquartile range (IQR), from the 25th to 75th percentile
+- The line inside the box is the median
+- The whiskers extend to the smallest and largest values within 1.5 * IQR
+- Points outside the whiskers are outliers
+
+### Violin Plots
+
+Violin plots combine aspects of box plots and density plots, showing both the distribution and key statistics.
+
+```{r violin-plots}
+# Violin plots
+ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl, group = cyl)) +
+  geom_violin(trim = FALSE) +
+  labs(title = "Fuel Efficiency Distribution by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  theme_minimal()
+```
+
+The width of the violin at each point represents the density of data at that value. This helps visualize the distribution shape.
+
+### Box Plot + Violin Plot Comparison
+
+Let's compare box plots and violin plots side by side:
+
+```{r box-violin-comparison}
+# Box plot
+p1 <- ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl, group = cyl)) +
+  geom_boxplot() +
+  labs(title = "Box Plot",
+       x = "Cylinders",
+       y = "MPG") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Violin plot
+p2 <- ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl, group = cyl)) +
+  geom_violin(trim = FALSE) +
+  labs(title = "Violin Plot",
+       x = "Cylinders",
+       y = "MPG") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Using patchwork to combine plots
+p1 + p2 + plot_annotation(
+  title = "Comparison of Box Plot and Violin Plot",
+  subtitle = "Visualizing the same data with different techniques"
+)
+```
+
+Each type of plot has its strengths:
+- Box plots focus on the quartiles and outliers
+- Violin plots show the full distribution shape
+
+### Density Plots
+
+Density plots show the distribution of a continuous variable, similar to a smoothed histogram:
+
+```{r density-plots}
+# Density plots
+ggplot(mtcars, aes(x = mpg, fill = cyl, group = cyl)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density of Fuel Efficiency by Number of Cylinders",
+       x = "Miles Per Gallon",
+       y = "Density",
+       fill = "Cylinders") +
+  theme_minimal()
+```
+
+### QQ Plots
+
+QQ plots (quantile-quantile plots) help assess if a dataset follows a particular theoretical distribution, typically the normal distribution:
+
+```{r qq-plots}
+# QQ plots
+ggplot(mtcars, aes(sample = mpg)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(title = "QQ Plot of Fuel Efficiency",
+       x = "Theoretical Quantiles",
+       y = "Sample Quantiles") +
+  theme_minimal()
+```
+
+If the points roughly follow the line, it suggests the data is normally distributed. Deviations from the line indicate departures from normality.
+
+We can also create QQ plots by group:
+
+```{r qq-plots-by-group}
+# QQ plots by group
+ggplot(mtcars, aes(sample = mpg, color = cyl, group = cyl)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(title = "QQ Plot of Fuel Efficiency by Number of Cylinders",
+       x = "Theoretical Quantiles",
+       y = "Sample Quantiles",
+       color = "Cylinders") +
+  theme_minimal()
+```
+
+## Visualizing Relationships
+
+Understanding relationships between variables is a key part of data analysis. Let's explore some techniques for visualizing relationships.
+
+### Correlation Matrix
+
+First, let's compute the correlation matrix for numeric variables in the mtcars dataset:
+
+```{r correlation-matrix}
+# Select numeric variables for correlation
+mtcars_numeric <- mtcars[, c("mpg", "disp", "hp", "drat", "wt", "qsec")]
+cor_matrix <- cor(mtcars_numeric)
+print(cor_matrix)
+```
+
+### Correlation Plot with corrplot
+
+The corrplot package provides a nice visualization of correlation matrices:
+
+```{r corrplot}
+# Correlation plot with corrplot
+corrplot(cor_matrix, 
+         method = "circle", 
+         type = "upper", 
+         order = "hclust",
+         tl.col = "black",
+         tl.srt = 45,
+         addCoef.col = "black",
+         number.cex = 0.7,
+         title = "Correlation Matrix of Car Features",
+         mar = c(0, 0, 2, 0))
+```
+
+In this plot:
+- Blue circles indicate positive correlations
+- Red circles indicate negative correlations
+- The size of the circle represents the strength of the correlation
+- The numerical values show the exact correlation coefficients
+
+### Heatmap of Correlation Matrix
+
+We can also visualize the correlation matrix as a heatmap using ggplot2:
+
+```{r correlation-heatmap}
+# Melt the correlation matrix for ggplot2
+melted_cor <- melt(cor_matrix)
+
+# Create a heatmap
+ggplot(melted_cor, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
+                       name = "Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  coord_fixed() +
+  labs(title = "Correlation Heatmap of Car Features",
+       x = "",
+       y = "")
+```
+
+### Scatter Plot Matrix
+
+A scatter plot matrix shows pairwise relationships between multiple variables:
+
+```{r scatter-plot-matrix}
+# Scatter plot matrix
+pairs(mtcars_numeric, 
+      main = "Scatter Plot Matrix of Car Features",
+      pch = 21,
+      bg = rainbow(nrow(mtcars_numeric))[rank(mtcars$cyl)])
+```
+
+Each cell in the matrix shows the relationship between the variable on the x-axis and the variable on the y-axis. This is a quick way to explore relationships between multiple variables simultaneously.
+
+## Time Series Visualizations
+
+Time series data is common in many fields. Let's explore techniques for visualizing time series data using the economics dataset from ggplot2.
+
+### Basic Time Series Plot
+
+```{r basic-time-series}
+# Load economics dataset
+data(economics, package = "ggplot2")
+
+# Basic time series plot
+ggplot(economics, aes(x = date, y = unemploy)) +
+  geom_line(color = "blue") +
+  labs(title = "US Unemployment Over Time",
+       x = "Date",
+       y = "Unemployment (thousands)") +
+  theme_minimal()
+```
+
+### Multiple Time Series
+
+We often want to compare multiple time series. Let's reshape the data to plot multiple series:
+
+```{r multiple-time-series}
+# Prepare data for multiple time series
+economics_long <- economics %>%
+  select(date, unemploy, psavert) %>%
+  rename(Unemployment = unemploy, 
+         "Personal Savings Rate" = psavert) %>%
+  melt(id.vars = "date", variable.name = "series")
+
+# Plot multiple time series
+ggplot(economics_long, aes(x = date, y = value, color = series)) +
+  geom_line() +
+  labs(title = "US Economic Indicators Over Time",
+       x = "Date",
+       y = "Value",
+       color = "Indicator") +
+  theme_minimal() +
+  facet_wrap(~ series, scales = "free_y", ncol = 1)
+```
+
+Using `facet_wrap` with `scales = "free_y"` allows each series to have its own y-axis scale, which is useful when the series have different units or magnitudes.
+
+### Seasonal Decomposition Visualization
+
+Time series often contain multiple components: trend, seasonality, and random variations. We can visualize these components separately.
+
+For demonstration, let's create a simulated seasonal time series:
+
+```{r simulated-time-series}
+# Create a simulated seasonal time series
+set.seed(123)
+time <- seq(as.Date("2010-01-01"), as.Date("2019-12-31"), by = "month")
+trend <- seq(1, length(time)) * 0.1
+seasonal <- sin(2 * pi * seq(1, length(time)) / 12) * 5
+random <- rnorm(length(time), 0, 1)
+value <- trend + seasonal + random
+
+ts_data <- data.frame(
+  date = time,
+  value = value,
+  trend = trend,
+  seasonal = seasonal,
+  random = random
+)
+
+# Plot the components
+p1 <- ggplot(ts_data, aes(x = date, y = value)) +
+  geom_line() +
+  labs(title = "Original Time Series",
+       x = "",
+       y = "Value") +
+  theme_minimal()
+
+p2 <- ggplot(ts_data, aes(x = date, y = trend)) +
+  geom_line(color = "blue") +
+  labs(title = "Trend Component",
+       x = "",
+       y = "Trend") +
+  theme_minimal()
+
+p3 <- ggplot(ts_data, aes(x = date, y = seasonal)) +
+  geom_line(color = "green") +
+  labs(title = "Seasonal Component",
+       x = "",
+       y = "Seasonal") +
+  theme_minimal()
+
+p4 <- ggplot(ts_data, aes(x = date, y = random)) +
+  geom_line(color = "red") +
+  labs(title = "Random Component",
+       x = "Date",
+       y = "Random") +
+  theme_minimal()
+
+# Combine the plots using patchwork
+(p1 / p2 / p3 / p4) + 
+  plot_annotation(
+    title = "Time Series Decomposition",
+    subtitle = "Breaking down a time series into its components"
+  )
+```
+
+This visualization makes it easy to see:
+- The original time series with its overall pattern
+- The long-term trend component (steadily increasing)
+- The seasonal component (repeating pattern)
+- The random noise component
+
+## Combining Plots with patchwork
+
+The patchwork package makes it easy to combine multiple plots into a single figure. We've already used it in several examples, but let's explore it more explicitly.
+
+First, let's create some basic plots:
+
+```{r basic-plots-for-patchwork}
+# Create some basic plots
+p1 <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Weight vs. MPG",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon") +
+  theme_minimal()
+
+p2 <- ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Horsepower vs. MPG",
+       x = "Horsepower",
+       y = "Miles Per Gallon") +
+  theme_minimal()
+
+p3 <- ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(bins = 10, fill = "skyblue", color = "black") +
+  labs(title = "MPG Distribution",
+       x = "Miles Per Gallon",
+       y = "Count") +
+  theme_minimal()
+
+p4 <- ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl), group = cyl)) +
+  geom_boxplot() +
+  labs(title = "MPG by Cylinders",
+       x = "Cylinders",
+       y = "Miles Per Gallon") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Side by Side Arrangement
+
+```{r patchwork-side-by-side}
+# Side by side arrangement
+p1 + p2
+```
+
+### Stacked Arrangement
+
+```{r patchwork-stacked}
+# Stacked arrangement
+p1 / p2
+```
+
+### Grid Arrangement
+
+```{r patchwork-grid}
+# Grid arrangement
+(p1 + p2) / (p3 + p4)
+```
+
+### Complex Layout
+
+```{r patchwork-complex}
+# Complex layout
+layout <- "
+AABB
+AACC
+"
+p1 + p2 + p3 + plot_layout(design = layout)
+```
+
+### With Annotations
+
+```{r patchwork-with-annotations}
+# With annotations
+(p1 + p2) / (p3 + p4) +
+  plot_annotation(
+    title = "Car Performance Analysis Dashboard",
+    subtitle = "Multiple visualizations of the mtcars dataset",
+    caption = "Source: 1974 Motor Trend US magazine",
+    tag_levels = "A"
+  )
+```
+
+The patchwork package provides a flexible and intuitive way to create complex layouts of multiple plots. This is especially useful for creating dashboards or combining related visualizations.
+
+## Summary
+
+In this notebook, we've explored specialized visualization techniques including:
+
+1. Statistical visualizations (box plots, violin plots, density plots, QQ plots)
+2. Relationship visualizations (correlation matrices, heatmaps, scatter plot matrices)
+3. Time series visualizations (basic time series, multiple time series, seasonal decomposition)
+4. Combining plots with patchwork
+
+These techniques provide powerful tools for exploring and communicating patterns in your data. In the next section, we'll explore interactive visualizations using plotly.

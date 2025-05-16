@@ -1,0 +1,207 @@
+---
+title: "Introduction to Data Visualization in R"
+author: "Jennifer Favaloro"
+date: "May 19, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 100)
+```
+
+# Introduction to Data Visualization in R
+
+This notebook provides an introduction to data visualization in R, comparing base R plotting with ggplot2 and other packages. We'll cover the basic plotting capabilities of both systems and explore their differences and respective advantages.
+
+## Installing Required Packages
+
+First, let's install the necessary packages. This only needs to be done once, but packages should be updated periodically.
+
+```{r install-packages, eval=FALSE}
+# Install pacman for managing packages
+install.packages('pacman')
+
+# Use pacman to load/install multiple packages at once
+pacman::p_load('tidyverse',	'ggplot2',	'dplyr',	'RColorBrewer',	
+               'reshape2',	'corrplot',	'patchwork', 'devtools',
+               'plotly', 'vcd')
+
+# Install ggmosaic from GitHub
+devtools::install_github("haleyjeppson/ggmosaic", upgrade = "never") 
+library(ggmosaic)
+```
+
+For this tutorial, we'll use the packages we just installed. Let's load them:
+
+```{r load-packages}
+# Load required libraries
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+```
+
+## Base R Plotting System
+
+R comes with a built-in plotting system that is simple but powerful. Let's explore some basic visualizations using the built-in `mtcars` dataset.
+
+```{r load-data}
+# Load the built-in mtcars dataset
+data(mtcars)
+head(mtcars)
+
+# Convert cylinders and transmission to factors for better visualization
+mtcars$cyl <- as.factor(mtcars$cyl)  # Number of cylinders
+mtcars$am <- as.factor(mtcars$am)    # Transmission (0 = automatic, 1 = manual)
+```
+
+### Simple Scatter Plot with Base R
+
+Let's create a scatter plot showing the relationship between car weight and fuel efficiency:
+
+```{r base-scatter}
+plot(mtcars$wt, mtcars$mpg, 
+     main = "Car Weight vs. Fuel Efficiency",
+     xlab = "Weight (1000 lbs)",
+     ylab = "Miles Per Gallon",
+     pch = 19,  # Point shape
+     col = "blue")
+
+# Add a regression line
+abline(lm(mpg ~ wt, data = mtcars), col = "red", lwd = 2)
+```
+
+The scatter plot shows a clear negative relationship between car weight and fuel efficiency - heavier cars tend to have lower MPG.
+
+### Simple Histogram with Base R
+
+Now, let's create a histogram to visualize the distribution of fuel efficiency:
+
+```{r base-histogram}
+hist(mtcars$mpg, 
+     main = "Distribution of Fuel Efficiency",
+     xlab = "Miles Per Gallon",
+     col = "lightblue",
+     border = "black")
+```
+
+From the histogram, we can see that the distribution of fuel efficiency is somewhat bimodal, with peaks around 15 MPG and 30 MPG.
+
+### Simple Boxplot with Base R
+
+Let's compare fuel efficiency across different numbers of cylinders using a boxplot:
+
+```{r base-boxplot}
+boxplot(mpg ~ cyl, data = mtcars,
+        main = "Fuel Efficiency by Number of Cylinders",
+        xlab = "Number of Cylinders",
+        ylab = "Miles Per Gallon",
+        col = c("lightgreen", "lightblue", "lightpink"))
+```
+
+The boxplot clearly shows that cars with fewer cylinders (4) tend to have higher fuel efficiency than those with more cylinders (6 or 8).
+
+## Introduction to ggplot2
+
+ggplot2 is based on the Grammar of Graphics, a systematic approach to describing and building graphs. Let's recreate the same visualizations using ggplot2.
+
+### The Same Scatter Plot with ggplot2
+
+```{r ggplot-scatter}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(color = "blue") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon") +
+  theme_minimal()
+```
+
+Notice that ggplot2 automatically adds the confidence interval around the regression line (the shaded area).
+
+### The Same Histogram with ggplot2
+
+```{r ggplot-histogram}
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(fill = "lightblue", color = "black", bins = 10) +
+  labs(title = "Distribution of Fuel Efficiency",
+       x = "Miles Per Gallon",
+       y = "Count") +
+  theme_minimal()
+```
+
+### The Same Boxplot with ggplot2
+
+```{r ggplot-boxplot}
+ggplot(mtcars, aes(x = cyl, y = mpg, fill = cyl)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("lightgreen", "lightblue", "lightpink")) +
+  labs(title = "Fuel Efficiency by Number of Cylinders",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon",
+       fill = "Cylinders") +
+  theme_minimal()
+```
+
+## Key Differences and Advantages
+
+### ggplot2 Advantages:
+- Consistent syntax based on layers
+- Better defaults for aesthetics
+- Easier to create complex visualizations
+- Better support for grouping and faceting
+- Extensive theming capabilities
+
+### Base R Advantages:
+- Simpler for quick, one-off plots
+- No additional packages required
+- More direct control over plot elements
+- Sometimes faster for large datasets
+
+## Other Visualization Packages in R
+
+Here's a brief preview of other packages we'll explore in subsequent sections:
+
+- **plotly**: for interactive visualizations
+- **corrplot**: for correlation matrices
+- **RColorBrewer**: for color palettes
+- **patchwork**: for combining plots
+
+## Datasets for this Demo
+
+Let's preview the datasets we'll be using throughout this tutorial:
+
+### Iris Dataset
+
+```{r iris-dataset}
+# Iris dataset
+data(iris)
+head(iris)
+```
+
+### Diamonds Dataset from ggplot2
+
+```{r diamonds-dataset}
+# Diamonds dataset from ggplot2
+data(diamonds, package = "ggplot2")
+head(diamonds)
+```
+
+### Economics Dataset from ggplot2
+
+```{r economics-dataset}
+# Economics dataset from ggplot2
+data(economics, package = "ggplot2")
+head(economics)
+```
+
+## Summary
+
+In this introduction, we've seen how to create basic plots using both base R and ggplot2. We've also discussed the key differences between these two plotting systems and introduced some additional visualization packages we'll explore later. In the next section, we'll dive deeper into ggplot2 and explore its capabilities in more detail.

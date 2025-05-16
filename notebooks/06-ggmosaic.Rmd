@@ -1,0 +1,300 @@
+---
+title: "Mosaic Plots with ggmosaic"
+author: "Jennifer Favaloro"
+date: "May 19, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 100)
+```
+
+# Mosaic Plots with ggmosaic
+
+This notebook introduces mosaic plots using the ggmosaic package, which extends ggplot2 to create mosaic plots. Mosaic plots are useful for visualizing the relationship between categorical variables, particularly for examining conditional probabilities and independence.
+
+```{r load-packages}
+# Load required libraries
+library(ggplot2)
+library(ggmosaic)
+library(dplyr)
+library(vcd)  # For example datasets
+library(plotly)  # For making interactive mosaic plots
+```
+
+## Introduction to Mosaic Plots
+
+Mosaic plots are area-based visualizations that show the relationship between categorical variables. The area of each rectangle in the plot is proportional to the count or frequency of the corresponding combination of categories.
+
+Mosaic plots are particularly useful for:
+- Visualizing contingency tables
+- Examining independence between categorical variables
+- Identifying patterns and associations
+- Comparing proportions across multiple categories
+
+Let's explore mosaic plots using the ggmosaic package, which integrates mosaic plots with the ggplot2 framework.
+
+## Example 1: Basic Mosaic Plot
+
+Let's start with a simple mosaic plot showing the relationship between two categorical variables. We'll use the Titanic dataset from the vcd package:
+
+```{r basic-mosaic}
+# Using the Titanic dataset from vcd package
+data("Titanic")
+titanic_df <- as.data.frame(Titanic)
+
+# Basic mosaic plot showing survival by class
+basic_mosaic <- ggplot(data = titanic_df) +
+  geom_mosaic(aes(weight = Freq, x = product(Survived, Class), fill = Survived)) +
+  labs(title = "Titanic Survival by Passenger Class",
+       subtitle = "Mosaic plot showing the relationship between survival and passenger class",
+       x = "Passenger Class",
+       y = "Survival") +
+  scale_fill_manual(values = c("No" = "#E41A1C", "Yes" = "#4DAF4A")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Display the plot
+print(basic_mosaic)
+```
+
+In this mosaic plot:
+- The x-axis represents passenger class (1st, 2nd, 3rd, Crew)
+- The y-axis represents survival (Yes/No)
+- The width of each column is proportional to the number of passengers in each class
+- The height of each colored rectangle within a column is proportional to the survival rate for that class
+- The fill color indicates survival status (green for survived, red for did not survive)
+
+We can see that:
+- 1st class passengers had the highest survival rate
+- 3rd class passengers and crew had the lowest survival rates
+- The width of the columns shows that crew members made up the largest group on the ship
+
+## Example 2: Multi-variable Mosaic Plot
+
+We can create more complex mosaic plots with three variables:
+
+```{r multi-var-mosaic}
+# Mosaic plot showing survival by class and sex
+multi_var_mosaic <- ggplot(data = titanic_df) +
+  geom_mosaic(aes(weight = Freq, x = product(Sex, Class), fill = Survived)) +
+  labs(title = "Titanic Survival by Sex and Passenger Class",
+       subtitle = "Mosaic plot showing the relationship between survival, sex, and passenger class",
+       x = "Sex and Passenger Class",
+       y = "Survival") +
+  scale_fill_manual(values = c("No" = "#E41A1C", "Yes" = "#4DAF4A")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Display the plot
+print(multi_var_mosaic)
+```
+
+This more complex mosaic plot shows:
+- The relationship between sex, passenger class, and survival
+- The width of each rectangle represents the number of passengers in each sex-class combination
+- The height represents the proportion who survived vs. did not survive
+
+Key insights:
+- Women in 1st and 2nd class had very high survival rates
+- Men in all classes had lower survival rates than women
+- 3rd class women had lower survival rates than 1st and 2nd class women
+- Most crew members were men, and they had a relatively low survival rate
+
+## Example 3: Four-variable Mosaic Plot
+
+We can add a fourth variable to create an even more complex mosaic plot:
+
+```{r four-var-mosaic}
+# Mosaic plot showing survival by class, sex, and age
+four_var_mosaic <- ggplot(data = titanic_df) +
+  geom_mosaic(aes(weight = Freq, 
+                  x = product(Sex, Class, Age), 
+                  fill = Survived)) +
+  labs(title = "Titanic Survival by Sex, Class, and Age",
+       subtitle = "Mosaic plot showing the relationship between multiple variables",
+       x = "Sex, Class, and Age",
+       y = "Survival") +
+  scale_fill_manual(values = c("No" = "#E41A1C", "Yes" = "#4DAF4A")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Display the plot
+print(four_var_mosaic)
+```
+
+This complex mosaic plot shows:
+- The relationship between sex, passenger class, age, and survival
+- The hierarchy of variables is reflected in the nesting of rectangles
+
+While this plot contains a lot of information, it's starting to become difficult to interpret due to the large number of categories. This illustrates both the power and the limitations of mosaic plots.
+
+## Example 4: Using Different Datasets
+
+Let's create a mosaic plot with a different dataset, the HairEyeColor dataset:
+
+```{r hair-eye-mosaic}
+# Using the HairEyeColor dataset
+data(HairEyeColor)
+hair_eye_df <- as.data.frame(HairEyeColor)
+
+# Mosaic plot showing relationship between hair color and eye color
+hair_eye_mosaic <- ggplot(data = hair_eye_df) +
+  geom_mosaic(aes(weight = Freq, x = product(Hair), fill = Eye)) +
+  labs(title = "Relationship Between Hair Color and Eye Color",
+       subtitle = "Mosaic plot showing the distribution of eye colors across hair colors",
+       x = "Hair Color",
+       y = "Eye Color") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal()
+
+# Display the plot
+print(hair_eye_mosaic)
+```
+
+This mosaic plot shows the relationship between hair color and eye color. We can see patterns such as:
+- Brown eyes are common across all hair colors
+- Blue eyes are most common in people with blonde hair
+- Green eyes are relatively rare across all hair colors
+- Almost all people with black hair have brown eyes
+
+## Example 5: Mosaic Plot with Facets
+
+We can combine mosaic plots with faceting to add another dimension:
+
+```{r faceted-mosaic}
+# Mosaic plot showing hair and eye color, faceted by sex
+faceted_mosaic <- ggplot(data = hair_eye_df) +
+  geom_mosaic(aes(weight = Freq, x = product(Hair), fill = Eye)) +
+  facet_grid(. ~ Sex) +
+  labs(title = "Relationship Between Hair Color and Eye Color by Sex",
+       subtitle = "Mosaic plots faceted by sex",
+       x = "Hair Color",
+       y = "Eye Color") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal()
+
+# Display the plot
+print(faceted_mosaic)
+```
+
+Faceting allows us to compare the hair-eye color relationship between males and females. The patterns are broadly similar, but there are some differences in the exact proportions.
+
+## Example 6: Customized Mosaic Plot
+
+Let's create a highly customized mosaic plot:
+
+```{r custom-mosaic}
+# Using the Titanic dataset again
+# Customized mosaic plot with different aesthetics
+custom_mosaic <- ggplot(data = titanic_df) +
+  geom_mosaic(aes(weight = Freq, 
+                  x = product(Class, Sex), 
+                  fill = Survived),
+              divider = mosaic("v"), # vertical divider
+              na.rm = TRUE,
+              offset = 0.02) +  # spacing between tiles
+  labs(title = "Titanic Survival Patterns",
+       subtitle = "Customized mosaic plot showing survival by class and sex",
+       x = "Passenger Class and Sex",
+       y = "Survival") +
+  scale_fill_manual(values = c("No" = "#882255", "Yes" = "#117733"),
+                    name = "Survived",
+                    labels = c("No" = "Did not survive", "Yes" = "Survived")) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12, color = "darkgray"),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    legend.title = element_text(size = 10, face = "bold")
+  )
+
+# Display the plot
+print(custom_mosaic)
+```
+
+This customized mosaic plot includes:
+- A vertical divider to change the orientation of the plot
+- Spacing between tiles for better visual separation
+- Custom colors for the survival categories
+- Customized theme elements for better aesthetics
+
+## Example 7: Interactive Mosaic Plot with plotly
+
+We can combine ggmosaic with plotly to create interactive mosaic plots:
+
+```{r interactive-mosaic}
+# Create a ggplot mosaic plot
+interactive_base <- ggplot(data = titanic_df) +
+  geom_mosaic(aes(weight = Freq, 
+                  x = product(Class), 
+                  fill = Survived,
+                  text = paste("Class:", Class,
+                              "<br>Survived:", Survived,
+                              "<br>Count:", Freq,
+                              "<br>Percentage:", round(Freq/sum(Freq)*100, 1), "%"))) +
+  labs(title = "Titanic Survival by Passenger Class",
+       x = "Passenger Class",
+       y = "Survival") +
+  scale_fill_manual(values = c("No" = "#E41A1C", "Yes" = "#4DAF4A")) +
+  theme_minimal()
+
+# Convert to an interactive plotly plot
+interactive_mosaic <- ggplotly(interactive_base, tooltip = "text")
+
+# Display the interactive plot
+interactive_mosaic
+```
+
+The interactive plotly version adds hover text with detailed information about each rectangle, including the count and percentage. Users can also:
+- Hover over rectangles to see details
+- Click on legend items to hide/show categories
+- Zoom and pan as needed
+
+## Notes on ggmosaic
+
+Here are some key points to remember when using ggmosaic:
+
+1. The `product()` function is used to specify the variables for the mosaic plot
+   - The order of variables in `product()` affects the visualization structure
+   - The first variable is divided vertically, the second horizontally, and so on
+
+2. The `weight` parameter is used to specify the frequency or count variable
+   - This is typically a column in your dataset that contains the counts
+   - For individual-level data (where each row is one observation), you can omit this
+
+3. The `divider` parameter controls how the plot is divided
+   - `h` for horizontal division
+   - `v` for vertical division
+   - You can combine them for complex layouts, e.g., `mosaic("hv")`
+
+4. ggmosaic integrates with the ggplot2 ecosystem
+   - You can use all the ggplot2 theming and customization functions
+   - You can combine mosaic plots with other ggplot2 elements
+
+5. For large datasets with many categories, consider:
+   - Aggregating data first to reduce complexity
+   - Using facets to split the visualization
+   - Limiting the number of variables to make the plot interpretable
+
+## Summary
+
+In this notebook, we've explored mosaic plots using the ggmosaic package, including:
+
+1. Basic mosaic plots for visualizing relationships between two categorical variables
+2. Multi-variable mosaic plots for exploring complex relationships
+3. Using different datasets to visualize various types of categorical data
+4. Faceting mosaic plots to add another dimension
+5. Customizing mosaic plots with different aesthetics and themes
+6. Creating interactive mosaic plots with plotly
+
+Mosaic plots are a powerful tool for visualizing relationships between categorical variables, especially when examining conditional probabilities and independence. The ggmosaic package makes it easy to create these plots within the familiar ggplot2 framework.
