@@ -91,6 +91,7 @@ This repository contains a hands-on R tutorial covering modern data visualizatio
 You can run this tutorial without installing anything on your local machine:
 
 - **[Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)**: Launch a complete development environment in your browser with all required packages pre-installed.
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)
 
 - **[Open in RStudio via Binder](https://mybinder.org/v2/gh/jenifav/r-data-viz-tutorial/main?urlpath=rstudio)**: Run the tutorial in an RStudio environment directly in your browser.
 [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jenifav/r-data-viz-tutorial/main?urlpath=rstudio)
@@ -105,7 +106,7 @@ If packages are not automatically installed when using Binder:
 4. You can verify installation with: `library(tidyverse); library(ggplot2)`
 
 - **[Open in Posit Cloud](https://posit.cloud/content/create?content=https://github.com/jenifav/r-data-viz-tutorial)**: Run in RStudio through Posit Cloud (formerly RStudio Cloud).
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)
+
 
 ## 🌟 Features
 
