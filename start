@@ -1,0 +1,3 @@
+#!/bin/bash
+R -e "if (!require('ggmosaic')) remotes::install_github('haleyjeppson/ggmosaic', upgrade='never')"
+exec "$@"
