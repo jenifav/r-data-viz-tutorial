@@ -1,24 +1,32 @@
-# Install and load required packages
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load('tidyverse', 'ggplot2', 'dplyr', 'RColorBrewer',
-               'reshape2', 'corrplot', 'patchwork', 'devtools',
-               'plotly', 'vcd')
-
-# Install ggmosaic from GitHub if not already installed
-if (!require("ggmosaic")) {
-  devtools::install_github("haleyjeppson/ggmosaic", upgrade = "never")
-}
-
-# Print installed package versions for reference
-ip <- installed.packages()
-packages <- c('tidyverse', 'ggplot2', 'dplyr', 'RColorBrewer',
-              'reshape2', 'corrplot', 'patchwork', 'devtools',
-              'plotly', 'vcd', 'ggmosaic')
-cat("Installed package versions:\n")
-for(pkg in packages) {
-  if(pkg %in% rownames(ip)) {
-    cat(pkg, ": ", ip[pkg, "Version"], "\n", sep="")
-  } else {
-    cat(pkg, ": Not installed\n", sep="")
-  }
+{
+  "name": "R Data Visualization Tutorial",
+  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.2",
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+      "packages": "RColorBrewer,reshape2,corrplot,patchwork,devtools,plotly,vcd,ggmosaic"
+    }
+  },
+  "forwardPorts": [8787],
+  "portsAttributes": {
+    "8787": {
+      "label": "RStudio",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "echo 'options(repos = c(CRAN = \"https://cloud.r-project.org\"))' > ~/.Rprofile && Rscript install.R",
+  "postStartCommand": "sudo rstudio-server start",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "reditorsupport.r",
+        "REditorSupport.r-lsp"
+      ],
+      "settings": {
+        "r.rterm.linux": "/usr/local/bin/R",
+        "r.bracketedPaste": true,
+        "r.plot.useHttpgd": true
+      }
+    }
+  },
+  "remoteUser": "rstudio"
 }
