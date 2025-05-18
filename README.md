@@ -59,30 +59,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Authors of the included datasets for making them available for educational purposes
 - [RStudio](https://posit.co/) (now Posit) for their excellent IDE and R Markdown support
 - The [Rocker Project](https://www.rocker-project.org/) for R Docker images used in Codespaces
-- [Binder](https://mybinder.org/) for enabling executable environments for R notebooks## 🖼️ Preview Gallery
+- [Binder](https://mybinder.org/) for enabling executable environments for R notebooks 
 
-The R Markdown notebooks include rendered visualizations that you can view directly on GitHub:
-
-<table>
-  <tr>
-    <td><img src="https://via.placeholder.com/400x250?text=Base+R+vs+ggplot2" alt="Base R vs ggplot2"/></td>
-    <td><img src="https://via.placeholder.com/400x250?text=Advanced+ggplot2" alt="Advanced ggplot2"/></td>
-  </tr>
-  <tr>
-    <td align="center"><b>Base R vs ggplot2 Comparison</b></td>
-    <td align="center"><b>Advanced ggplot2 Techniques</b></td>
-  </tr>
-  <tr>
-    <td><img src="https://via.placeholder.com/400x250?text=Interactive+Plotly" alt="Interactive Plotly"/></td>
-    <td><img src="https://via.placeholder.com/400x250?text=Mosaic+Plots" alt="Mosaic Plots"/></td>
-  </tr>
-  <tr>
-    <td align="center"><b>Interactive Plotly Visualizations</b></td>
-    <td align="center"><b>Mosaic Plots for Categorical Data</b></td>
-  </tr>
-</table>
-
-*Note: Replace these placeholder images with actual screenshots from  tutorial outputs*# R Data Visualization Tutorial
 
 ![R Version](https://img.shields.io/badge/R-%3E%3D4.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -115,8 +93,19 @@ You can run this tutorial without installing anything on your local machine:
 - **[Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)**: Launch a complete development environment in your browser with all required packages pre-installed.
 
 - **[Open in RStudio via Binder](https://mybinder.org/v2/gh/jenifav/r-data-viz-tutorial/main?urlpath=rstudio)**: Run the tutorial in an RStudio environment directly in your browser.
+[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jenifav/r-data-viz-tutorial/main?urlpath=rstudio)
+
+## Note for Binder Users
+
+If packages are not automatically installed when using Binder:
+
+1. Open the R console in RStudio
+2. Run the command: `source("install.R")`
+3. Wait for all packages to install (this may take a few minutes)
+4. You can verify installation with: `library(tidyverse); library(ggplot2)`
 
 - **[Open in Posit Cloud](https://posit.cloud/content/create?content=https://github.com/jenifav/r-data-viz-tutorial)**: Run in RStudio through Posit Cloud (formerly RStudio Cloud).
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)
 
 ## 🌟 Features
 
@@ -176,7 +165,7 @@ Choose one of these options to run the tutorial directly in your browser:
 2. **Binder**:
    - Click the "Launch Binder" button at the top of this README
    - Wait for the RStudio environment to load in your browser
-   - Open the `Data Viz with RStudio - 05-19-2025.R` file from the file browser
+   - Open the `Data Viz with RStudio.R` file from the file browser
    - Run the code chunks by selecting them and pressing Ctrl+Enter
 
 3. **Posit Cloud** (formerly RStudio Cloud):
@@ -197,7 +186,7 @@ If you prefer to run the tutorial locally:
 
 2. **Open the R script in RStudio:**
    
-   Open the file `Data Viz with RStudio - 05-19-2025.R` in RStudio.
+   Open the file `Data Viz with RStudio.R` in RStudio.
 
 3. **Install required packages:**
    
@@ -219,7 +208,7 @@ This repository is set up for optimal learning and execution:
 ```
 r-data-viz-tutorial/
 ├── README.md                            # This file
-├── Data Viz with RStudio - 05-19-2025.R # Main R script
+├── Data Viz with RStudio.R              # Main R script
 ├── notebooks/                           # R Markdown versions
 │   ├── 01-introduction.Rmd              # Introduction section as Rmd
 │   ├── 02-ggplot2-basics.Rmd            # ggplot2 basics as Rmd
@@ -320,7 +309,7 @@ This tutorial can be accessed in multiple ways:
 - **Posit Cloud**: Professional RStudio experience in the cloud
 
 ### 2. Download Files
-- **Complete R Script**: [Download R Script](https://raw.githubusercontent.com/jenifav/r-data-viz-tutorial/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R)
+- **Complete R Script**: [Download R Script](https://raw.githubusercontent.com/jenifav/r-data-viz-tutorial/main/Data%20Viz%20with%20RStudio.R)
 - **R Markdown Notebooks**: Each section is available as a separate .Rmd file in the [notebooks directory](https://github.com/jenifav/r-data-viz-tutorial/tree/main/notebooks)
 - **Clone Repository**: `git clone https://github.com/jenifav/r-data-viz-tutorial.git`
 
