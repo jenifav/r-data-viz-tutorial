@@ -1,11 +1,6 @@
 {
   "name": "R Data Visualization Tutorial",
   "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.2",
-  "features": {
-    "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-      "packages": "RColorBrewer,reshape2,corrplot,patchwork,devtools,plotly,vcd,ggmosaic"
-    }
-  },
   "forwardPorts": [8787],
   "portsAttributes": {
     "8787": {
@@ -13,7 +8,7 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "postCreateCommand": "echo 'options(repos = c(CRAN = \"https://cloud.r-project.org\"))' > ~/.Rprofile && Rscript install.R",
+  "postCreateCommand": "echo 'options(repos = c(CRAN = \"https://cloud.r-project.org\"))' > ~/.Rprofile",
   "postStartCommand": "sudo rstudio-server start",
   "customizations": {
     "vscode": {
