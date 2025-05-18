@@ -86,8 +86,8 @@ The R Markdown notebooks include rendered visualizations that you can view direc
 
 ![R Version](https://img.shields.io/badge/R-%3E%3D4.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/yourusername/r-data-viz-tutorial/main?urlpath=rstudio)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=yourusername/r-data-viz-tutorial)
+[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jenifav/r-data-viz-tutorial/main?urlpath=rstudio)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)
 
 ## Note for Binder Users
 
@@ -112,11 +112,11 @@ This repository contains a hands-on R tutorial covering modern data visualizatio
 
 You can run this tutorial without installing anything on your local machine:
 
-- **[Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=yourusername/r-data-viz-tutorial)**: Launch a complete development environment in your browser with all required packages pre-installed.
+- **[Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=jenifav/r-data-viz-tutorial)**: Launch a complete development environment in your browser with all required packages pre-installed.
 
-- **[Open in RStudio via Binder](https://mybinder.org/v2/gh/yourusername/r-data-viz-tutorial/main?urlpath=rstudio)**: Run the tutorial in an RStudio environment directly in your browser.
+- **[Open in RStudio via Binder](https://mybinder.org/v2/gh/jenifav/r-data-viz-tutorial/main?urlpath=rstudio)**: Run the tutorial in an RStudio environment directly in your browser.
 
-- **[Open in Posit Cloud](https://posit.cloud/content/create?content=https://github.com/yourusername/r-data-viz-tutorial)**: Run in RStudio through Posit Cloud (formerly RStudio Cloud).
+- **[Open in Posit Cloud](https://posit.cloud/content/create?content=https://github.com/jenifav/r-data-viz-tutorial)**: Run in RStudio through Posit Cloud (formerly RStudio Cloud).
 
 ## 🌟 Features
 
@@ -132,33 +132,33 @@ You can run this tutorial without installing anything on your local machine:
 Each section of the tutorial is available both in the main R script and as separate R Markdown notebooks:
 
 1. **Introduction to Data Visualization in R**
-   - [R Script Section](https://github.com/yourusername/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L11-L123)
-   - [R Markdown Notebook](https://github.com/yourusername/r-data-viz-tutorial/blob/main/notebooks/01-introduction.Rmd)
+   - [R Script Section](https://github.com/jenifav/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L11-L123)
+   - [R Markdown Notebook](https://github.com/jenifav/r-data-viz-tutorial/blob/main/notebooks/01-introduction.Rmd)
    - Covers base R plotting, intro to ggplot2, and comparisons between systems
 
 2. **Getting Started with ggplot2**
-   - [R Script Section](https://github.com/yourusername/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L126-L240)
-   - [R Markdown Notebook](https://github.com/yourusername/r-data-viz-tutorial/blob/main/notebooks/02-ggplot2-basics.Rmd)
+   - [R Script Section](https://github.com/jenifav/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L126-L240)
+   - [R Markdown Notebook](https://github.com/jenifav/r-data-viz-tutorial/blob/main/notebooks/02-ggplot2-basics.Rmd)
    - Explains the Grammar of Graphics concept and basic ggplot2 syntax
 
 3. **Advanced ggplot2 Techniques**
-   - [R Script Section](https://github.com/yourusername/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L243-L437)
-   - [R Markdown Notebook](https://github.com/yourusername/r-data-viz-tutorial/blob/main/notebooks/03-advanced-ggplot2.Rmd)
+   - [R Script Section](https://github.com/jenifav/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L243-L437)
+   - [R Markdown Notebook](https://github.com/jenifav/r-data-viz-tutorial/blob/main/notebooks/03-advanced-ggplot2.Rmd)
    - Covers faceting, custom themes, colors, annotations, and transformations
 
 4. **Specialized Visualizations**
-   - [R Script Section](https://github.com/yourusername/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L440-L583)
-   - [R Markdown Notebook](https://github.com/yourusername/r-data-viz-tutorial/blob/main/notebooks/04-specialized-viz.Rmd)
+   - [R Script Section](https://github.com/jenifav/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L440-L583)
+   - [R Markdown Notebook](https://github.com/jenifav/r-data-viz-tutorial/blob/main/notebooks/04-specialized-viz.Rmd)
    - Statistical visualizations, correlation plots, and time series techniques
 
 5. **Interactive Visualizations with Plotly**
-   - [R Script Section](https://github.com/yourusername/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L586-L723)
-   - [R Markdown Notebook](https://github.com/yourusername/r-data-viz-tutorial/blob/main/notebooks/05-plotly.Rmd)
+   - [R Script Section](https://github.com/jenifav/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L586-L723)
+   - [R Markdown Notebook](https://github.com/jenifav/r-data-viz-tutorial/blob/main/notebooks/05-plotly.Rmd)
    - Create interactive plots with tooltips, zooming, and panning
 
 6. **Mosaic Plots with ggmosaic**
-   - [R Script Section](https://github.com/yourusername/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L726-L851)
-   - [R Markdown Notebook](https://github.com/yourusername/r-data-viz-tutorial/blob/main/notebooks/06-ggmosaic.Rmd)
+   - [R Script Section](https://github.com/jenifav/r-data-viz-tutorial/blob/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R#L726-L851)
+   - [R Markdown Notebook](https://github.com/jenifav/r-data-viz-tutorial/blob/main/notebooks/06-ggmosaic.Rmd)
    - Techniques for visualizing categorical data relationships
 
 ## 🚀 Getting Started
@@ -191,7 +191,7 @@ If you prefer to run the tutorial locally:
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/yourusername/r-data-viz-tutorial.git
+   git clone https://github.com/jenifav/r-data-viz-tutorial.git
    cd r-data-viz-tutorial
    ```
 
@@ -320,9 +320,9 @@ This tutorial can be accessed in multiple ways:
 - **Posit Cloud**: Professional RStudio experience in the cloud
 
 ### 2. Download Files
-- **Complete R Script**: [Download R Script](https://raw.githubusercontent.com/yourusername/r-data-viz-tutorial/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R)
-- **R Markdown Notebooks**: Each section is available as a separate .Rmd file in the [notebooks directory](https://github.com/yourusername/r-data-viz-tutorial/tree/main/notebooks)
-- **Clone Repository**: `git clone https://github.com/yourusername/r-data-viz-tutorial.git`
+- **Complete R Script**: [Download R Script](https://raw.githubusercontent.com/jenifav/r-data-viz-tutorial/main/Data%20Viz%20with%20RStudio%20-%2005-19-2025.R)
+- **R Markdown Notebooks**: Each section is available as a separate .Rmd file in the [notebooks directory](https://github.com/jenifav/r-data-viz-tutorial/tree/main/notebooks)
+- **Clone Repository**: `git clone https://github.com/jenifav/r-data-viz-tutorial.git`
 
 ### 3. View on GitHub
 - Browse the R Markdown files directly on GitHub to see code and outputs
